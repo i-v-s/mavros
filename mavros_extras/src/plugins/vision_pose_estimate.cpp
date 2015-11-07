@@ -58,7 +58,7 @@ public:
 			tf2_start("VisionPoseTF", &VisionPoseEstimatePlugin::transform_cb);
 		}
 		else {
-			vision_sub = sp_nh.subscribe("pose", 10, &VisionPoseEstimatePlugin::vision_cb, this);
+			vision_sub = sp_nh.subscribe("pose", 10, &VisionPoseEstimatePlugin::vision_cb_wc, this);
 		}
 	}
 
@@ -134,6 +134,12 @@ private:
 	void vision_cb(const geometry_msgs::PoseStamped::ConstPtr &req) {
 		Eigen::Affine3d tr;
 		tf::poseMsgToEigen(req->pose, tr);
+
+		send_vision_estimate(req->header.stamp, tr);
+	}
+	void vision_cb_wc(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &req) {
+		Eigen::Affine3d tr;
+		tf::poseMsgToEigen(req->pose.pose, tr);
 
 		send_vision_estimate(req->header.stamp, tr);
 	}
