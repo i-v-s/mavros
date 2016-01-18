@@ -82,6 +82,8 @@ MAVConnUDP::MAVConnUDP(uint8_t system_id, uint8_t component_id,
 
 	try {
 		socket.open(udp::v4());
+	        boost::asio::socket_base::broadcast option(true);
+        	socket.set_option(option);
 		socket.bind(bind_ep);
 	}
 	catch (boost::system::system_error &err) {
